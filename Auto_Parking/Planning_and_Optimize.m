@@ -10,43 +10,19 @@ one_seg_flag = 0;
 completeness_flag_s = 0;
 completeness_flag_e = 0;
 param_.plot_flag = 1;
-% colour = [255,0,0;255,125,0;255,255,0;0,255,0;0,0,255;0,255,255;255,0,255];
-% c = 1;
-% completeness_flag = 0;
-% x = [];
-% y = [];
-% theta = [];
-% % Plot basic setups
 DrawParkingScenario();
-% % Hybrid A* search for a coarse path
-% [x, y, theta, path_length, completeness_flag] = SearchHybridAStarPath();
-% plot(x,y,'r'); drawnow 
-% param4 = [-2.68965517241379,9.86206896551724,0,1.49425287356322,9.86206896551724,0];
 %%%%%%%%%%%%%%global%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%[-16.0199005,-13.50746269,0.200398554,-11.39303483,-14.75124378,0.379494744]
-% param_g = [23.7642585551331,0.836501901140689,-1.57079632679490,9.46360153256705,5.67816091954023,3.14132932697929];
 % param_g = [vehicle_TPBV_.x0, vehicle_TPBV_.y0,vehicle_TPBV_.theta0,vehicle_TPBV_.xtf, vehicle_TPBV_.ytf,vehicle_TPBV_.thetatf];
 % % param_g = [vehicle_TPBV_.xtf, vehicle_TPBV_.ytf,vehicle_TPBV_.thetatf,vehicle_TPBV_.x0, vehicle_TPBV_.y0,vehicle_TPBV_.theta0];
 % [x, y, theta, path_length, completeness_flag] = SearchHybridAStarPath(param_g(1,1:3),param_g(1,4:6),10);
 % 
 % plot(x,y,'m'); drawnow
 % curvature_display(x,y);
-%%%%%%%%%%%%%%%test%%%%%%%%%%%%%%%%%
-% for i = 1:11
-%     if c > 7
-%         c = i-7;
-%     end
-%     param_g(3) = pi/6*i;
-%     [x, y, theta, path_length, completeness_flag] = SearchHybridAStarPath(param_g(1,1:3),param_g(1,4:6));
-%     plot(x,y,'Color',colour(c,:)./255); drawnow
-%     c = c+1;
-% end
 %%%%%%%%%%%%%segments%%%%%%%%%%%%%%%%%
 % if ~completeness_flag
 % if 1  %test
 tic
 [~,path] = AStarPath1();
-%     path = AStarSearch();
 [CX,WX,SS] = Finding_narrow_SSs(path);%由于该函数的特殊性，因此此处需要代入path在grid map下的坐标
 path = environment_scale_.environment_x_min + path.*((environment_scale_.environment_x_max-environment_scale_.environment_x_min)/size(costmap_,1));
 % plot(path(:,1),path(:,2),'c'); drawnow
@@ -79,8 +55,6 @@ if size(SS,2) ~= 1 && size(SS,2) ~= 2%0819:修改为一二段视为全局
         PY = [PY,path(last_segment_id+1,1)];
         [x,y,theta] = ordinary_path(PX,PY);
     else
-%         PX  = [-15.0421455938697,-11.4559386973180,-5.87739463601533,0.0996168582375461,0.0996168582375461];
-%         PY = [-0.0996168582375496,3.48659003831417,3.48659003831417,9.46360153256705,13.0498084291188];
         [x,y,theta] = Spline_smooth(PX,PY);
     end
     plot(x,y,'r'); drawnow
@@ -180,7 +154,6 @@ toc
 plotclosePolygon(bvr);
 WriteInitialGuess(x, y, theta, xr, yr, xf, yf, v, a, phy, w, tf);
 WriteBoundaryValues();
-%IPOPT的默认迭代次数为3000。无解，待尝试：初始规划+0，优化为+1
 tic
 !ampl rr.run
 toc
